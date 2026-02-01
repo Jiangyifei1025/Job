@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>蒋艺菲 Portfolio 2025</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #4a3f35;
+      --bg-darker: #3d342b;
+      --paper: #f5f0e8;
+      --cardboard: #c9a86c;
+      --text-light: #f5f0e8;
+      --text-muted: #b8a99a;
+      --accent-blue: #6b8cae;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Serif SC', serif; background: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    .font-hero { font-family: 'Playfair Display', serif; }
+    
+    /* Torn edges */
+    .torn-top::before {
+      content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 20px; background: var(--paper);
+      clip-path: polygon(0 100%, 1% 70%, 3% 100%, 5% 60%, 8% 90%, 10% 50%, 13% 80%, 16% 40%, 19% 70%, 22% 30%, 25% 60%, 28% 20%, 32% 50%, 35% 10%, 38% 40%, 42% 0%, 45% 30%, 48% 10%, 52% 40%, 55% 20%, 58% 50%, 62% 30%, 65% 60%, 68% 40%, 72% 70%, 75% 50%, 78% 80%, 82% 60%, 85% 90%, 88% 70%, 92% 100%, 95% 80%, 98% 100%, 100% 70%, 100% 100%);
+    }
+    .torn-bottom::after {
+      content: ''; position: absolute; bottom: -12px; left: 0; right: 0; height: 20px; background: var(--paper);
+      clip-path: polygon(0 0, 2% 30%, 5% 0%, 8% 40%, 11% 10%, 15% 50%, 18% 20%, 22% 60%, 25% 30%, 29% 70%, 33% 40%, 37% 80%, 41% 50%, 45% 90%, 49% 60%, 53% 100%, 57% 70%, 61% 100%, 65% 80%, 69% 100%, 73% 70%, 77% 90%, 81% 60%, 85% 80%, 89% 50%, 93% 70%, 97% 40%, 100% 60%, 100% 0);
+    }
+    
+    .text-stroke { -webkit-text-stroke: 2px var(--text-light); color: transparent; }
+    .tag { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 4px 12px; font-size: 0.75rem; color: var(--text-muted); }
+    .tag-highlight { background: var(--accent-blue); color: white; border: none; }
+    
+    /* Accordion */
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .accordion-open .accordion-content { max-height: 2000px; }
+    
+    /* Navigation */
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--cardboard); transition: width 0.3s ease; }
+    .nav-link:hover::after { width: 100%; }
+    
+    /* Photo frame */
+    .photo-frame { border: 4px solid var(--cardboard); box-shadow: 8px 8px 20px rgba(0,0,0,0.3); transform: rotate(2deg); }
+    
+    html { scroll-behavior: smooth; }
+    
+    /* ========== 新增动画效果 ========== */
+    
+    /* 开箱动画 */
+    .box-container { perspective: 1000px; }
+    .box-lid {
+      transform-origin: top center;
+      animation: openBox 1.5s ease-out 0.5s forwards;
+    }
+    @keyframes openBox {
+      0% { transform: rotateX(0deg); }
+      100% { transform: rotateX(-110deg); }
+    }
+    
+    /* 内容从箱子飘出 */
+    .float-up {
+      opacity: 0;
+      transform: translateY(50px);
+      animation: floatUp 1s ease-out forwards;
+    }
+    .float-up-1 { animation-delay: 1s; }
+    .float-up-2 { animation-delay: 1.2s; }
+    .float-up-3 { animation-delay: 1.4s; }
+    .float-up-4 { animation-delay: 1.6s; }
+    @keyframes floatUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* 拼贴装饰 - 便签 */
+    .sticky-note {
+      background: #fff8dc;
+      padding: 12px;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
+      transform: rotate(-3deg);
+      position: relative;
+    }
+    .sticky-note::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 16px;
+      background: rgba(200,180,150,0.7);
+    }
+    
+    /* 拼贴装饰 - 胶带 */
+    .tape {
+      background: linear-gradient(90deg, transparent 0%, rgba(220,200,160,0.6) 5%, rgba(220,200,160,0.6) 95%, transparent 100%);
+      height: 24px;
+      position: absolute;
+    }
+    .tape-1 { width: 80px; top: -10px; left: 20px; transform: rotate(-8deg); }
+    .tape-2 { width: 60px; top: -8px; right: 30px; transform: rotate(5deg); }
+    
+    /* 漂浮纸片装饰 */
+    .paper-piece {
+      position: absolute;
+      background: var(--paper);
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      animation: floatPaper 6s ease-in-out infinite;
+    }
+    @keyframes floatPaper {
+      0%, 100% { transform: translateY(0) rotate(var(--rotate)); }
+      50% { transform: translateY(-15px) rotate(calc(var(--rotate) + 3deg)); }
+    }
+    
+    /* 3D卡片悬停效果 */
+    .card-3d {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    .card-3d:hover {
+      transform: translateY(-8px) rotateX(5deg) rotateY(-5deg);
+      box-shadow: 10px 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    /* 滚动淡入动画 */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 技能标签弹跳 */
+    .skill-bounce {
+      transition: transform 0.2s ease;
+    }
+    .skill-bounce:hover {
+      transform: scale(1.1) rotate(-2deg);
+    }
+    
+    /* 按钮点击效果 */
+    .btn-press {
+      transition: transform 0.1s ease;
+    }
+    .btn-press:active {
+      transform: scale(0.95);
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .box-lid, .float-up, .paper-piece { animation: none; }
+      .float-up { opacity: 1; transform: none; }
+      .card-3d:hover { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 漂浮装饰纸片 -->
+<div class="paper-piece w-16 h-12 rounded" style="top: 15%; left: 5%; --rotate: -5deg; opacity: 0.4;"></div>
+<div class="paper-piece w-12 h-16 rounded" style="top: 40%; right: 8%; --rotate: 8deg; opacity: 0.3; animation-delay: -2s;"></div>
+<div class="paper-piece w-10 h-10 rounded" style="top: 70%; left: 10%; --rotate: 12deg; opacity: 0.35; animation-delay: -4s;"></div>
+
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-[#4a3f35]/95 backdrop-blur-sm border-b border-white/10">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <span class="font-hero font-bold text-lg text-[#f5f0e8]">Portfolio</span>
+    <div class="hidden md:flex gap-5 text-sm font-display">
+      <a href="#home" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">Home</a>
+      <a href="#education" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">Education</a>
+      <a href="#projects" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">Projects</a>
+      <a href="#academics" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">Academics</a>
+      <a href="#skills" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">Skills</a>
+      <a href="#about" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">About</a>
+      <a href="#contact" class="nav-link relative text-[#b8a99a] hover:text-[#f5f0e8]">Contact</a>
+    </div>
+    <button id="mobileMenuBtn" class="md:hidden text-[#f5f0e8] text-xl">☰</button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-[#4a3f35] border-t border-white/10 px-4 py-3">
+    <div class="flex flex-col gap-2 text-sm font-display">
+      <a href="#home" class="py-2 text-[#b8a99a]">Home</a><a href="#education" class="py-2 text-[#b8a99a]">Education</a><a href="#projects" class="py-2 text-[#b8a99a]">Projects</a>
+      <a href="#academics" class="py-2 text-[#b8a99a]">Academics</a><a href="#education" class="py-2 text-[#b8a99a]">Education</a><a href="#skills" class="py-2 text-[#b8a99a]">Skills</a>
+      <a href="#about" class="py-2 text-[#b8a99a]">About</a><a href="#contact" class="py-2 text-[#b8a99a]">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section with Box Animation -->
+<section id="home" class="min-h-screen pt-16 relative">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid lg:grid-cols-2 gap-8 items-center mb-8">
+      <!-- 左侧：个人信息 -->
+      <div>
+        <p class="font-display text-[#b8a99a] text-xs tracking-[0.3em] mb-3 float-up float-up-1">BEHAVIORAL SCIENCE RESEARCHER</p>
+        <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold text-[#f5f0e8] leading-none mb-4 float-up float-up-2">蒋艺菲</h1>
+        <p class="text-[#f5f0e8] text-base mb-4 leading-relaxed float-up float-up-3">
+          行为科学背景｜研究与数据驱动的业务洞察与项目执行｜AI 增效实践者
+        </p>
+        <div class="flex flex-wrap gap-4 text-sm mb-6 float-up float-up-4">
+          <span class="flex items-center gap-2 text-[#b8a99a]">
+            <span class="w-2 h-2 rounded-full bg-[#c9f869]"></span>
+            澳门大学心理学本科
+          </span>
+          <span class="flex items-center gap-2 text-[#b8a99a]">
+            <span class="w-2 h-2 rounded-full bg-[#c9f869]"></span>
+            LSE 行为科学硕士
+          </span>
+        </div>
+      </div>
+      
+      <!-- 右侧：照片 -->
+      <div class="flex justify-center float-up float-up-3">
+        <div class="photo-frame bg-[#3d342b] w-64 h-80 sm:w-72 sm:h-96 overflow-hidden">
+          <img src="https://image2url.com/r2/default/images/1769946990807-3d8ecad2-7ef7-4254-bcd8-c7819ceb353b.jpg" alt="蒋艺菲" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Card with 3D effect -->
+    <div class="bg-[#3d342b] rounded-lg p-6 sm:p-8 relative card-3d fade-in-up">
+      <!-- 胶带装饰 -->
+      <div class="tape tape-1"></div>
+      <div class="tape tape-2"></div>
+      
+      <p class="text-[#f5f0e8] mb-4 leading-relaxed">
+        从可观测的行为与事实出发，理解人们的决策逻辑，并将洞察转化为可执行的行动建议与跨团队推进方案。
+      </p>
+      
+      <!-- 便签装饰 -->
+      <div class="sticky-note inline-block mb-4">
+        <p class="text-[#6b5b4f] text-sm italic">
+          💡 行为科学关注真实情境中"人实际怎么做"
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="border-l-4 border-[#c9a86c] pl-3 skill-bounce">
+          <h3 class="font-display font-bold text-[#f5f0e8] text-sm">研究与分析</h3>
+          <p class="text-[#b8a99a] text-xs">定性×定量</p>
+        </div>
+        <div class="border-l-4 border-[#6b8cae] pl-3 skill-bounce">
+          <h3 class="font-display font-bold text-[#f5f0e8] text-sm">项目执行与多方协作</h3>
+          <p class="text-[#b8a99a] text-xs">跨团队推进</p>
+        </div>
+        <div class="border-l-4 border-[#a08060] pl-3 skill-bounce">
+          <h3 class="font-display font-bold text-[#f5f0e8] text-sm">从洞察到可执行建议</h3>
+          <p class="text-[#b8a99a] text-xs">落地导向</p>
+        </div>
+        <div class="border-l-4 border-[#8b7355] pl-3 skill-bounce">
+          <h3 class="font-display font-bold text-[#f5f0e8] text-sm">AI工具提升效率</h3>
+          <p class="text-[#b8a99a] text-xs">vibe coding/agents</p>
+        </div>
+      </div>
+      
+      <div class="flex flex-wrap gap-3">
+        <a href="https://drive.google.com/file/d/1LL05Tnamk0W0-UTd6_pxcr_8Ur0Kp7z3/view?usp=drive_link" target="_blank" class="inline-flex items-center gap-2 bg-[#c9a86c] text-[#3d342b] px-5 py-2.5 rounded font-display font-semibold hover:bg-[#ddc9a3] transition-colors text-sm btn-press">
+          📄 下载简历
+        </a>
+        <a href="#contact" class="inline-flex items-center gap-2 border-2 border-[#c9a86c] text-[#c9a86c] px-5 py-2.5 rounded font-display font-semibold hover:bg-[#c9a86c] hover:text-[#3d342b] transition-colors text-sm btn-press">
+          ✉️ 联系我
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Education Section -->
+<section id="education" class="py-12 relative">
+  <div class="bg-[#f5f0e8] torn-top torn-bottom relative py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="font-hero text-4xl font-black text-[#3d342b] mb-1 fade-in-up">Education</h2>
+      <p class="text-[#6b5b4f] mb-8 font-display text-sm fade-in-up">教育背景</p>
+      
+      <div class="space-y-6">
+        <!-- LSE -->
+        <div class="bg-white p-6 rounded-lg shadow card-3d fade-in-up relative">
+          <div class="tape tape-1"></div>
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3">
+            <div>
+              <h3 class="font-display text-lg font-bold text-[#3d342b]">🎓 伦敦政治经济学院 LSE</h3>
+              <p class="text-[#6b8cae] font-medium">行为科学 硕士</p>
+            </div>
+            <span class="text-[#8b7355] text-sm font-display mt-1 sm:mt-0">2025.09 - 2026.09</span>
+          </div>
+          <div class="text-[#6b5b4f] text-sm">
+            <p class="mb-2"><strong>主要课程：</strong></p>
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">行为科学基础</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">消费行为及可持续发展</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">行为科学定量运用</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">行为科学实验学</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">行为科学及 AI 发展</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 澳门大学 -->
+        <div class="bg-white p-6 rounded-lg shadow card-3d fade-in-up relative">
+          <div class="tape tape-2"></div>
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3">
+            <div>
+              <h3 class="font-display text-lg font-bold text-[#3d342b]">🎓 澳门大学</h3>
+              <p class="text-[#6b8cae] font-medium">心理学 本科</p>
+            </div>
+            <div class="text-right mt-1 sm:mt-0">
+              <span class="text-[#8b7355] text-sm font-display">2021.09 - 2025.06</span>
+              <p class="text-[#c9a86c] font-bold text-sm">GPA 3.84 / 4.0</p>
+            </div>
+          </div>
+          <div class="text-[#6b5b4f] text-sm mb-4">
+            <p class="mb-2"><strong>主要课程：</strong></p>
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">心理学基础</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">组织与工业管理心理学</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">消费者心理</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">网络消费心理</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">心理统计学</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">实验研究方法</span>
+              <span class="inline-block bg-[#e8e0d5] px-2 py-1 rounded text-xs skill-bounce">微观经济学</span>
+            </div>
+          </div>
+          <div class="text-[#6b5b4f] text-sm">
+            <p class="mb-2"><strong>🏆 获奖情况：</strong></p>
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-block bg-[#c9a86c]/20 text-[#8b7355] px-3 py-1 rounded text-xs skill-bounce">张昆仑书院积极贡献奖奖学金</span>
+              <span class="inline-block bg-[#c9a86c]/20 text-[#8b7355] px-3 py-1 rounded text-xs skill-bounce">全球事业部优秀交换学生奖学金</span>
+              <span class="inline-block bg-[#c9a86c]/20 text-[#8b7355] px-3 py-1 rounded text-xs skill-bounce">心理系院长荣誉推荐名单</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="py-12 relative">
+  <div class="bg-[#f5f0e8] torn-top torn-bottom relative py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="font-hero text-4xl font-black text-[#3d342b] mb-1 fade-in-up">Projects</h2>
+      <p class="text-[#6b5b4f] mb-8 font-display text-sm fade-in-up">核心项目经历</p>
+      
+      <!-- Project 1: 猛士 -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-5 card-3d fade-in-up" data-accordion="mengshi">
+        <div class="p-5 cursor-pointer" onclick="toggleAccordion('mengshi')">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="inline-block bg-[#c9a86c] text-white px-3 py-1 rounded text-xs font-display font-medium mb-2">新能源×智能驾驶×越野</span>
+              <h3 class="font-display text-lg font-bold text-[#3d342b]">猛士 M 项目上市前用户调研</h3>
+            </div>
+            <span class="text-[#c9a86c] transition-transform accordion-icon text-sm">▼</span>
+          </div>
+          <p class="text-[#6b5b4f] text-sm"><strong class="text-[#3d342b]">Goal:</strong> 支持新车上市前的定价讨论、目标用户分层及传播侧重点对齐。</p>
+          <div class="mt-3 pt-2 border-t border-[#e8e0d5]">
+            <span class="text-xs text-[#8b7355] font-display font-medium">12 天｜100+ 用户｜定量 N=150*3｜定性 N=18*3｜座谈会 9 场</span>
+          </div>
+        </div>
+        <div class="accordion-content">
+          <div class="px-5 pb-5 border-t border-[#e8e0d5] pt-4 bg-[#faf8f5]">
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">🏢 Company</h4>
+            <p class="text-[#6b5b4f] text-sm mb-3">东风汽车集团猛士汽车科技公司｜产品营销部实习</p>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">📋 What I Did</h4>
+            <ul class="list-disc list-inside mb-4 space-y-1 text-[#6b5b4f] text-sm">
+              <li>参与调研问卷框架设计（需求、使用场景、竞品、价格感知、品牌信任等维度）</li>
+              <li>执行 12 天线下实车调研，引导潜在用户完成静态评测与动态试驾/试乘流程</li>
+              <li>整理并分析多场座谈会材料，进行主题归纳与差异比较</li>
+              <li>提炼高意向用户画像与关键决策阻力点，形成可执行建议</li>
+            </ul>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">📦 Deliverables</h4>
+            <div class="mb-4">
+              <span class="inline-block bg-[#e8e0d5] text-[#6b5b4f] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">目标用户快照与人群分层标签</span>
+              <span class="inline-block bg-[#e8e0d5] text-[#6b5b4f] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">关键决策因素与阻力清单</span>
+              <span class="inline-block bg-[#e8e0d5] text-[#6b5b4f] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">面向跨团队对齐的传播表达与体验优化建议</span>
+            </div>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">🔄 Transferable Skills</h4>
+            <div>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">结构化拆解问题</span>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">研究执行与迭代</span>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">跨团队协作</span>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">将洞察转化为行动建议</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 2: 东方明见 -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden card-3d fade-in-up" data-accordion="dongfang">
+        <div class="p-5 cursor-pointer" onclick="toggleAccordion('dongfang')">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="inline-block bg-[#6b8cae] text-white px-3 py-1 rounded text-xs font-display font-medium mb-2">心理工作者专业培训</span>
+              <h3 class="font-display text-lg font-bold text-[#3d342b]">东方明见心理培训工作坊</h3>
+            </div>
+            <span class="text-[#c9a86c] transition-transform accordion-icon text-sm">▼</span>
+          </div>
+          <p class="text-[#6b5b4f] text-sm"><strong class="text-[#3d342b]">Context:</strong> 面向心理咨询师、学校心理辅导员及心理学学习者的专业培训项目，核心目标为客户满意度与口碑。</p>
+        </div>
+        <div class="accordion-content">
+          <div class="px-5 pb-5 border-t border-[#e8e0d5] pt-4 bg-[#faf8f5]">
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">🏢 Company</h4>
+            <p class="text-[#6b5b4f] text-sm mb-3">东方明见心理心理健康研究所｜培训二部实习</p>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">📋 What I Did</h4>
+            <ul class="list-disc list-inside mb-4 space-y-1 text-[#6b5b4f] text-sm">
+              <li>参与 3 个培训项目的全流程执行（单个项目 4 天）</li>
+              <li>对接授课讲师，协调课程内容、行程安排与授课要求</li>
+              <li>与课程研发团队确认教学结构与重点内容</li>
+              <li>统筹学员信息管理与现场支持，处理培训过程中的即时问题</li>
+              <li>收集并整理 100+ 份学员满意度问卷，围绕课程、讲师、机构与工作人员等维度进行分析总结</li>
+            </ul>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">💡 Data & Insights</h4>
+            <ul class="list-disc list-inside mb-4 space-y-1 text-[#6b5b4f] text-sm">
+              <li>识别实时翻译课程中"信息传递成本高、课堂效率受影响"的问题</li>
+              <li>基于学员反馈，提出将部分基础内容前置为课前先修材料、课堂聚焦关键问题的改进方向</li>
+            </ul>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">📊 Market Benchmarking</h4>
+            <ul class="list-disc list-inside mb-4 space-y-1 text-[#6b5b4f] text-sm">
+              <li>对标全国线上与线下 15 个同类心理培训项目</li>
+              <li>比较维度包括：定价区间、课程结构、讲师背景与证书设置</li>
+              <li>输出对标表，为课程内容设计提供整体参考</li>
+            </ul>
+            <h4 class="font-display font-semibold text-[#3d342b] mb-2 text-sm">🔄 Transferable Skills</h4>
+            <div>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">项目协调与推进</span>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">跨角色沟通</span>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">满意度分析</span>
+              <span class="inline-block bg-[#6b8cae]/20 text-[#4a6b8a] px-3 py-1 rounded text-xs mr-2 mb-2 skill-bounce">现场问题解决</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Academics Section -->
+<section id="academics" class="py-12">
+  <div class="max-w-4xl mx-auto px-4">
+    <h2 class="font-hero text-4xl font-black text-[#f5f0e8] mb-1 fade-in-up">Academic <span class="text-stroke">Practice</span></h2>
+    <p class="text-[#b8a99a] mb-8 font-display text-sm fade-in-up">学校课堂项目</p>
+    <div class="space-y-3">
+      <div class="bg-[#3d342b] p-4 rounded-lg hover:bg-[#4a4035] transition-colors card-3d fade-in-up">
+        <h3 class="font-medium text-[#f5f0e8] mb-1">直播场景中人格特质与观众规模偏好的关系</h3>
+        <p class="text-[#c9a86c] text-sm">定量研究｜问卷数据分析</p>
+      </div>
+      <div class="bg-[#3d342b] p-4 rounded-lg hover:bg-[#4a4035] transition-colors card-3d fade-in-up">
+        <h3 class="font-medium text-[#f5f0e8] mb-1">离婚对儿童内化与外化问题的影响</h3>
+        <p class="text-[#c9a86c] text-sm">定量研究｜回归与分组比较</p>
+      </div>
+      <div class="bg-[#3d342b] p-4 rounded-lg hover:bg-[#4a4035] transition-colors card-3d fade-in-up">
+        <h3 class="font-medium text-[#f5f0e8] mb-1">伴侣浪漫主义认同与关系满意度——基于双人数据建模与脑活动指标的分析</h3>
+        <p class="text-[#c9a86c] text-sm">双人数据建模 Dyadic RSA｜脑活动指标分析</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="py-12 relative">
+  <div class="bg-[#f5f0e8] torn-top torn-bottom relative py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="font-hero text-4xl font-black text-[#3d342b] mb-1 fade-in-up">Skills</h2>
+      <p class="text-[#6b5b4f] mb-8 font-display text-sm fade-in-up">能力簇</p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="bg-white p-5 rounded-lg shadow card-3d fade-in-up">
+          <h3 class="font-display font-bold text-[#3d342b] mb-3 pb-2 border-b-2 border-[#c9a86c]">Research & Analysis</h3>
+          <ul class="space-y-2">
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#c9a86c]"></span>问卷设计</li>
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#c9a86c]"></span>访谈与座谈会整理</li>
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#c9a86c]"></span>定性编码与主题归纳</li>
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#c9a86c]"></span>定量分析（Excel / SPSS / R）</li>
+          </ul>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow card-3d fade-in-up">
+          <h3 class="font-display font-bold text-[#3d342b] mb-3 pb-2 border-b-2 border-[#6b8cae]">Project & Collaboration</h3>
+          <ul class="space-y-2">
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#6b8cae]"></span>多方协作</li>
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#6b8cae]"></span>项目节点推进与现场执行</li>
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#6b8cae]"></span>问题诊断与流程优化</li>
+          </ul>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow card-3d fade-in-up">
+          <h3 class="font-display font-bold text-[#3d342b] mb-3 pb-2 border-b-2 border-[#8b7355]">AI for Productivity</h3>
+          <ul class="space-y-2">
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#8b7355]"></span>AI辅助信息整理、分析与结构化表达</li>
+            <li class="text-[#6b5b4f] text-sm pl-4 relative"><span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#8b7355]"></span>正在学习并应用 vibe coding 与 agents 提升效率</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-12">
+  <div class="max-w-3xl mx-auto px-4">
+    <h2 class="font-hero text-4xl font-black text-[#f5f0e8] mb-6 fade-in-up">About <span class="text-stroke">Me</span></h2>
+    <div class="bg-[#3d342b] p-6 rounded-lg relative card-3d fade-in-up">
+      <div class="tape tape-1"></div>
+      <p class="text-[#f5f0e8] leading-relaxed mb-4">
+        我学习行为科学，是因为我对"人实际如何做出决策，以及他们为什么这样做"非常感兴趣。相比抽象概念，我更偏好从可观测的行为与事实出发，通过研究与数据理解行为模式，并将洞察转化为可执行的建议。
+      </p>
+      <p class="text-[#f5f0e8] leading-relaxed">
+        我是一个偏务实的行动者（ISFJ），也在持续探索如何利用 AI 工具更高效地完成分析、整理与表达工作。
+      </p>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <span class="tag rounded skill-bounce">ISFJ</span>
+        <span class="tag tag-highlight rounded skill-bounce">行为科学</span>
+        <span class="tag rounded skill-bounce">AI Explorer</span>
+        <span class="tag rounded skill-bounce">务实行动者</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-12 relative">
+  <div class="bg-[#f5f0e8] torn-top relative py-12">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="font-hero text-4xl font-black text-[#3d342b] mb-1 fade-in-up">Thank You</h2>
+      <p class="text-[#6b5b4f] mb-8 font-display text-sm fade-in-up">期待与您联系</p>
+      
+      <div class="space-y-4 fade-in-up">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span class="text-[#6b5b4f] font-display font-semibold text-sm">📧 Email</span>
+          <div class="flex items-center gap-2 bg-[#3d342b] text-[#f5f0e8] px-4 py-2 rounded">
+            <code class="text-sm">1937694204@qq.com</code>
+            <button onclick="copyText('1937694204@qq.com', this)" class="ml-2 text-[#c9a86c] hover:text-[#f5f0e8] transition-colors text-xs">复制</button>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span class="text-[#6b5b4f] font-display font-semibold text-sm">📱 电话</span>
+          <div class="flex items-center gap-2 bg-[#3d342b] text-[#f5f0e8] px-4 py-2 rounded">
+            <code class="text-sm">18674021590</code>
+            <button onclick="copyText('18674021590', this)" class="ml-2 text-[#c9a86c] hover:text-[#f5f0e8] transition-colors text-xs">复制</button>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span class="text-[#6b5b4f] font-display font-semibold text-sm">💬 微信</span>
+          <div class="flex items-center gap-2 bg-[#3d342b] text-[#f5f0e8] px-4 py-2 rounded">
+            <code class="text-sm">JYF1937694204</code>
+            <button onclick="copyText('JYF1937694204', this)" class="ml-2 text-[#c9a86c] hover:text-[#f5f0e8] transition-colors text-xs">复制</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-8 fade-in-up">
+        <a href="https://drive.google.com/file/d/1LL05Tnamk0W0-UTd6_pxcr_8Ur0Kp7z3/view?usp=drive_link" target="_blank" class="inline-block bg-[#3d342b] text-[#f5f0e8] px-6 py-3 rounded font-display font-semibold hover:bg-[#6b5b4f] transition-colors btn-press">
+          下载完整简历
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="py-6 text-center text-[#6b5b4f] text-sm bg-[#3d342b]">
+  <p>© 2025 蒋艺菲 Portfolio. Built with care.</p>
+</footer>
+
+<script>
+function toggleAccordion(id) {
+  const card = document.querySelector(`[data-accordion="${id}"]`);
+  const icon = card.querySelector('.accordion-icon');
+  card.classList.toggle('accordion-open');
+  icon.style.transform = card.classList.contains('accordion-open') ? 'rotate(180deg)' : 'rotate(0)';
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '已复制';
+    setTimeout(() => { btn.textContent = '复制'; }, 2000);
+  });
+}
+
+document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+  document.getElementById('mobileMenu').classList.toggle('hidden');
+});
+document.querySelectorAll('#mobileMenu a').forEach(link => {
+  link.addEventListener('click', () => document.getElementById('mobileMenu').classList.add('hidden'));
+});
+
+// 滚动淡入动画
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.fade-in-up').forEach(el => {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
